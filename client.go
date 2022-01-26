@@ -84,11 +84,19 @@ func (c *client) Publish(context context.Context, batch publisher.Batch) error {
 		panic("no batch")
 	}
 
-	events := batch.Events()
+        events := batch.Events()
+	logp.Info("echo events: %v", events)
 	c.observer.NewBatch(len(events))
 
 	rows := c.extractData(events)
 	sqlText := c.generateSql()
+
+	logp.Info("echo %v", rows)
+
+	logp.Info("echo %v", sqlText)
+
+
+
 
 	err := c.batchInsert(sqlText, rows, nil)
 	if err != nil {
