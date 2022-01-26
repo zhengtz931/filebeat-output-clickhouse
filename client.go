@@ -84,16 +84,16 @@ func (c *client) Publish(context context.Context, batch publisher.Batch) error {
 		panic("no batch")
 	}
 
-        events := batch.Events()
+	events := batch.Events()
 	logp.Info("echo events: %v", events)
 	c.observer.NewBatch(len(events))
 
 	rows := c.extractData(events)
 	sqlText := c.generateSql()
 
-	logp.Info("echo %v", rows)
-
-	logp.Info("echo %v", sqlText)
+	//logp.Info("echo %v", rows)
+	//
+	//logp.Info("echo %v", sqlText)
 
 
 
@@ -115,14 +115,18 @@ func (c *client) String() string {
 
 func (c *client) extractData(events []publisher.Event) [][]interface{} {
 	cSize := len(c.columns)
-	rows := make([][]interface{}, len(events))
+	//rows := make([][]interface{}, len(events))
+	rows := make([][]interface{}, 3)
 	for i, event := range events {
 		content := event.Content
+		logp.Info(content.GetValue(c))
 		row := make([]interface{}, cSize)
 		for i, c := range c.columns {
-			if _, e := content.Fields[c]; e {
-				row[i], _ = content.GetValue(c)
-			}
+			logp.Info("echo log i : %v, c : %v", i, c)
+			//if _, e := content.Fields[c]; e {
+			//	row[i], _ = content.GetValue(c)
+			//}
+			row[i] = "123"
 		}
 		rows[i] = row
 	}
