@@ -85,7 +85,6 @@ func (c *client) Publish(context context.Context, batch publisher.Batch) error {
 	}
 
 	events := batch.Events()
-	logp.Info("echo events: %v", events)
 	c.observer.NewBatch(len(events))
 
 	rows := c.extractData(events)
@@ -115,18 +114,18 @@ func (c *client) String() string {
 
 func (c *client) extractData(events []publisher.Event) [][]interface{} {
 	cSize := len(c.columns)
-	//rows := make([][]interface{}, len(events))
-	rows := make([][]interface{}, 3)
+	rows := make([][]interface{}, len(events))
+	//logp.Info("echo event: %v", events)
 	for i, event := range events {
 		content := event.Content
-		logp.Info(content.GetValue(c))
 		row := make([]interface{}, cSize)
 		for i, c := range c.columns {
 			logp.Info("echo log i : %v, c : %v", i, c)
-			//if _, e := content.Fields[c]; e {
-			//	row[i], _ = content.GetValue(c)
-			//}
-			row[i] = "123"
+			if _, e := content.Fields[c]; e {
+				row[i], _ = content.GetValue(c)
+				logp.Info("echo row[i]: %v",row[i])
+			}
+			row[i] = "2006-01-02 15:04:05"
 		}
 		rows[i] = row
 	}
